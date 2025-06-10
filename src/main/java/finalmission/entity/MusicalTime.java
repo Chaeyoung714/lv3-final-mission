@@ -21,4 +21,7 @@ public enum MusicalTime {
                 .orElseThrow(() -> new IllegalArgumentException("정해진 시간대만 예약 가능합니다."));
     }
 
+    public LocalTime getTime() {
+        return time;
+    }
 }

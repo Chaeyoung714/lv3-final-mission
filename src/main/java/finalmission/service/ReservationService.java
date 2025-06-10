@@ -3,6 +3,7 @@ package finalmission.service;
 import finalmission.dto.LoginMemberInfo;
 import finalmission.dto.ReservationCreateRequest;
 import finalmission.dto.ReservationFullResponse;
+import finalmission.dto.ReservationSimpleResponse;
 import finalmission.entity.Member;
 import finalmission.entity.Musical;
 import finalmission.entity.MusicalTime;
@@ -12,6 +13,7 @@ import finalmission.repository.MemberRepository;
 import finalmission.repository.MusicalRepository;
 import finalmission.repository.ReservationRepository;
 import finalmission.repository.SeatRepository;
+import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +33,19 @@ public class ReservationService {
         this.memberRepository = memberRepository;
     }
 
-    public ReservationFullResponse createReservation(
+    public List<ReservationFullResponse> findAll() {
+        return reservationRepository.findAll().stream()
+                .map(reservation -> new ReservationFullResponse(
+                        reservation.getDate(),
+                        reservation.getMusicalTime(),
+                        reservation.getMusical(),
+                        reservation.getMember(),
+                        reservation.getSeat()
+                ))
+                .toList();
+    }
+
+    public ReservationSimpleResponse createReservation(
             ReservationCreateRequest request,
             LoginMemberInfo loginMemberInfo
     ) {
@@ -51,6 +65,6 @@ public class ReservationService {
                 member,
                 requestSeat
         ));
-        return new ReservationFullResponse(createdReservation);
+        return new ReservationSimpleResponse(createdReservation);
     }
 }
