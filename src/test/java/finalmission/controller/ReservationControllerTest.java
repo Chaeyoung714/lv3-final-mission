@@ -44,6 +44,16 @@ class ReservationControllerTest {
                 .statusCode(200);
     }
 
+    @DisplayName("사용자는 본인이 한 예약의 상세 정보를 확인할 수 있다.")
+    @Test
+    void readMyReservationTest() {
+        RestAssured.given().log().all()
+                .cookie("token", loginToken)
+                .when().get("/reservations/1")
+                .then().log().all()
+                .statusCode(200);
+    }
+
     @DisplayName("사용자는 뮤지컬 티켓 한 매를 예약할 수 있다.")
     @Test
     void createReservationTest() {
