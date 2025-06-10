@@ -12,15 +12,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
-@DirtiesContext(classMode = ClassMode.BEFORE_CLASS)
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 class MemberControllerTest {
 
     @DisplayName("사용자는 로그인할 수 있다.")
     @Test
     void loginTest() {
-        LoginRequest loginRequest = new LoginRequest("moda@woowa.com", "password");
+        LoginRequest loginRequest = new LoginRequest("moda@woowa.com", "1234");
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(loginRequest)
