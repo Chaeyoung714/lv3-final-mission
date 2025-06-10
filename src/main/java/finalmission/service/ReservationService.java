@@ -1,7 +1,7 @@
 package finalmission.service;
 
 import finalmission.dto.LoginMemberInfo;
-import finalmission.dto.ReservationCreateRequest;
+import finalmission.dto.ReservationFullRequest;
 import finalmission.dto.ReservationFullResponse;
 import finalmission.dto.ReservationSimpleResponse;
 import finalmission.entity.Member;
@@ -14,8 +14,10 @@ import finalmission.repository.MemberRepository;
 import finalmission.repository.MusicalRepository;
 import finalmission.repository.ReservationRepository;
 import finalmission.repository.SeatRepository;
+import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.NoSuchElementException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,6 +27,9 @@ public class ReservationService {
     private final MusicalRepository musicalRepository;
     private final SeatRepository seatRepository;
     private final MemberRepository memberRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     public ReservationService(ReservationRepository reservationRepository, MusicalRepository musicalRepository,
                               SeatRepository seatRepository, MemberRepository memberRepository) {
@@ -54,18 +59,12 @@ public class ReservationService {
                 .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
         Reservation myReservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new NoSuchElementException("예약 정보를 찾을 수 없습니다."));
-        authorizeMyReservationRead(myReservation, member);
+        authorizeMyReservation(myReservation, member);
         return new ReservationFullResponse(myReservation);
     }
 
-    private void authorizeMyReservationRead(Reservation myReservation, Member member) {
-        if (!myReservation.matchesMember(member)) {
-            throw new UnauthorizedException("자신의 예약만 조회할 수 있습니다.");
-        }
-    }
-
     public ReservationSimpleResponse createReservation(
-            ReservationCreateRequest request,
+            ReservationFullRequest request,
             LoginMemberInfo loginMemberInfo
     ) {
         Member member = memberRepository.findById(loginMemberInfo.id())
@@ -85,5 +84,39 @@ public class ReservationService {
                 requestSeat
         ));
         return new ReservationSimpleResponse(createdReservation);
+    }
+
+    public ReservationSimpleResponse updateReservation(
+            ReservationFullRequest request,
+            LoginMemberInfo loginMemberInfo,
+            Long reservationId
+    ) {
+        Member member = memberRepository.findById(loginMemberInfo.id())
+                .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
+        Reservation myReservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new NoSuchElementException("예약 정보를 찾을 수 없습니다."));
+        authorizeMyReservation(myReservation, member);
+
+        if (request.seatId() != null) {
+            Seat requestSeat = seatRepository.findById(request.seatId())
+                    .orElseThrow(() -> new NoSuchElementException("좌석 정보를 찾을 수 없습니다."));
+            myReservation.changeSeatTo(requestSeat);
+        }
+        if (request.date() != null
+                || request.musicalTime() != null
+                || request.musicalId() != null
+        ) {
+            throw new IllegalArgumentException("극과 날짜 및 시간은 변경할 수 없습니다. 예약 취소 후 재예매해주세요.");
+        }
+
+        return new ReservationSimpleResponse(
+                reservationRepository.findById(reservationId).get()
+        );
+    }
+
+    private void authorizeMyReservation(Reservation myReservation, Member member) {
+        if (!myReservation.matchesMember(member)) {
+            throw new UnauthorizedException("자신의 예약만 조회 및 수정할 수 있습니다.");
+        }
     }
 }

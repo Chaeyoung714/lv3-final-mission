@@ -1,7 +1,7 @@
 package finalmission.controller;
 
 import finalmission.dto.LoginMemberInfo;
-import finalmission.dto.ReservationCreateRequest;
+import finalmission.dto.ReservationFullRequest;
 import finalmission.dto.ReservationFullResponse;
 import finalmission.dto.ReservationSimpleResponse;
 import finalmission.dto.annotation.CurrentMember;
@@ -9,6 +9,7 @@ import finalmission.service.ReservationService;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,11 +51,23 @@ public class ReservationController {
     @PostMapping("/reservations")
     @ResponseStatus(HttpStatus.CREATED)
     public ReservationSimpleResponse postReservation(
-            @RequestBody ReservationCreateRequest request,
+            @RequestBody ReservationFullRequest request,
             @CurrentMember LoginMemberInfo loginMemberInfo
     ) {
         return reservationService.createReservation(
                 request, loginMemberInfo
+        );
+    }
+
+    @PatchMapping("/reservations/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ReservationSimpleResponse patchReservation(
+            @RequestBody ReservationFullRequest request,
+            @CurrentMember LoginMemberInfo loginMemberInfo,
+            @PathVariable Long id
+    ) {
+        return reservationService.updateReservation(
+                request, loginMemberInfo, id
         );
     }
 }

@@ -41,6 +41,10 @@ public class Reservation {
     protected Reservation() {
     }
 
+    public void changeSeatTo(Seat requestSeat) {
+        this.seat = requestSeat;
+    }
+
     public boolean matchesMember(Member member) {
         return this.member.getId().equals(member.getId());
     }

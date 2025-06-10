@@ -1,7 +1,9 @@
 package finalmission.controller;
 
+import static org.hamcrest.Matchers.is;
+
 import finalmission.auth.JwtTokenProvider;
-import finalmission.dto.ReservationCreateRequest;
+import finalmission.dto.ReservationFullRequest;
 import finalmission.entity.Member;
 import finalmission.service.MemberService;
 import io.restassured.RestAssured;
@@ -67,7 +69,7 @@ class ReservationControllerTest {
     @DisplayName("사용자는 뮤지컬 티켓 한 매를 예약할 수 있다.")
     @Test
     void createReservationTest() {
-        ReservationCreateRequest reservationCreateRequest = new ReservationCreateRequest(
+        ReservationFullRequest reservationFullRequest = new ReservationFullRequest(
                 LocalDate.of(2025, 6, 30),
                 LocalTime.of(14, 30),
                 1L,
@@ -77,9 +79,27 @@ class ReservationControllerTest {
         RestAssured.given().log().all()
                 .cookie("token", loginToken)
                 .contentType(ContentType.JSON)
-                .body(reservationCreateRequest)
+                .body(reservationFullRequest)
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(201);
+    }
+
+    @DisplayName("사용자는 뮤지컬 좌석 위치를 수정할 수 있다..")
+    @Test
+    void updateReservationSeatTest() {
+        ReservationFullRequest reservationFullRequest = new ReservationFullRequest(
+                null, null, null, 10L
+        );
+
+        RestAssured.given().log().all()
+                .cookie("token", loginToken)
+                .contentType(ContentType.JSON)
+                .body(reservationFullRequest)
+                .when().patch("/reservations/1")
+                .then().log().all()
+                .statusCode(200)
+                .body("seatGrade", is("R"))
+                .body("seatNumber", is(10));
     }
 }
