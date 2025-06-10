@@ -8,6 +8,7 @@ import finalmission.dto.annotation.CurrentMember;
 import finalmission.service.ReservationService;
 import java.util.List;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -61,13 +62,24 @@ public class ReservationController {
 
     @PatchMapping("/reservations/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ReservationSimpleResponse patchReservation(
+    public ReservationSimpleResponse patchMyReservation(
             @RequestBody ReservationFullRequest request,
             @CurrentMember LoginMemberInfo loginMemberInfo,
             @PathVariable Long id
     ) {
         return reservationService.updateReservation(
                 request, loginMemberInfo, id
+        );
+    }
+
+    @DeleteMapping("/reservations/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMyReservation(
+            @CurrentMember LoginMemberInfo loginMemberInfo,
+            @PathVariable Long id
+    ) {
+         reservationService.deleteMyReservation(
+                loginMemberInfo, id
         );
     }
 }

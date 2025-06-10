@@ -85,7 +85,7 @@ class ReservationControllerTest {
                 .statusCode(201);
     }
 
-    @DisplayName("사용자는 뮤지컬 좌석 위치를 수정할 수 있다..")
+    @DisplayName("사용자는 뮤지컬 좌석 위치를 수정할 수 있다.")
     @Test
     void updateReservationSeatTest() {
         ReservationFullRequest reservationFullRequest = new ReservationFullRequest(
@@ -101,5 +101,16 @@ class ReservationControllerTest {
                 .statusCode(200)
                 .body("seatGrade", is("R"))
                 .body("seatNumber", is(10));
+    }
+
+    @DisplayName("사용자는 자신의 예매를 삭제할 수 있다.")
+    @Test
+    void deleteReservationTest() {
+        RestAssured.given().log().all()
+                .cookie("token", loginToken)
+                .contentType(ContentType.JSON)
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .statusCode(204);
     }
 }

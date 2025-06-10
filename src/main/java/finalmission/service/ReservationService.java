@@ -114,9 +114,19 @@ public class ReservationService {
         );
     }
 
+    public void deleteMyReservation(LoginMemberInfo loginMemberInfo, Long reservationId) {
+        Member member = memberRepository.findById(loginMemberInfo.id())
+                .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
+        Reservation myReservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new NoSuchElementException("예약 정보를 찾을 수 없습니다."));
+        authorizeMyReservation(myReservation, member);
+
+        reservationRepository.delete(myReservation);
+    }
+
     private void authorizeMyReservation(Reservation myReservation, Member member) {
         if (!myReservation.matchesMember(member)) {
-            throw new UnauthorizedException("자신의 예약만 조회 및 수정할 수 있습니다.");
+            throw new UnauthorizedException("자신의 예약만 조회 및 변경할 수 있습니다.");
         }
     }
 }
