@@ -8,7 +8,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 public class Reservation {
@@ -20,7 +19,7 @@ public class Reservation {
     private LocalDate date;
 
     @Enumerated(value = EnumType.STRING)
-    private Time time;
+    private MusicalTime musicalTime;
 
     @ManyToOne
     private Musical musical;
@@ -28,16 +27,15 @@ public class Reservation {
     @ManyToOne
     private Member member;
 
-    @Enumerated(value = EnumType.STRING)
-    private SeatGrade seatGrade;
+    @ManyToOne
+    private Seat seat;
 
-    private int seatNumber;
-
-    public Reservation(Musical musical, Member member, SeatGrade seatGrade, int seatNumber) {
+    public Reservation(LocalDate date, MusicalTime musicalTime, Musical musical, Member member, Seat seat) {
+        this.date = date;
+        this.musicalTime = musicalTime;
         this.musical = musical;
         this.member = member;
-        this.seatGrade = seatGrade;
-        this.seatNumber = seatNumber;
+        this.seat = seat;
     }
 
     protected Reservation() {
@@ -55,11 +53,15 @@ public class Reservation {
         return member;
     }
 
-    public SeatGrade getSeatGrade() {
-        return seatGrade;
+    public LocalDate getDate() {
+        return date;
     }
 
-    public int getSeatNumber() {
-        return seatNumber;
+    public MusicalTime getMusicalTime() {
+        return musicalTime;
+    }
+
+    public Seat getSeat() {
+        return seat;
     }
 }
