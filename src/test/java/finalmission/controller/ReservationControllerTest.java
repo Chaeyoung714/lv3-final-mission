@@ -35,6 +35,15 @@ class ReservationControllerTest {
         loginToken = jwtTokenProvider.createToken(member);
     }
 
+    @DisplayName("모든 사용자는 예약 현황을 확인할 수 있다.")
+    @Test
+    void readAllReservationsTest() {
+        RestAssured.given().log().all()
+                .when().get("/reservations")
+                .then().log().all()
+                .statusCode(200);
+    }
+
     @DisplayName("사용자는 뮤지컬 티켓 한 매를 예약할 수 있다.")
     @Test
     void createReservationTest() {
