@@ -9,6 +9,7 @@ import finalmission.entity.Musical;
 import finalmission.entity.MusicalTime;
 import finalmission.entity.Reservation;
 import finalmission.entity.Seat;
+import finalmission.exception.UnauthorizedException;
 import finalmission.repository.MemberRepository;
 import finalmission.repository.MusicalRepository;
 import finalmission.repository.ReservationRepository;
@@ -35,14 +36,32 @@ public class ReservationService {
 
     public List<ReservationFullResponse> findAll() {
         return reservationRepository.findAll().stream()
-                .map(reservation -> new ReservationFullResponse(
-                        reservation.getDate(),
-                        reservation.getMusicalTime(),
-                        reservation.getMusical(),
-                        reservation.getMember(),
-                        reservation.getSeat()
-                ))
+                .map(ReservationFullResponse::new)
                 .toList();
+    }
+
+    public List<ReservationFullResponse> findMyReservations(LoginMemberInfo loginMemberInfo) {
+        Member member = memberRepository.findById(loginMemberInfo.id())
+                .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
+
+        return reservationRepository.findReservationsByMember(member).stream()
+                .map(ReservationFullResponse::new)
+                .toList();
+    }
+
+    public ReservationFullResponse findMyReservationById(LoginMemberInfo loginMemberInfo, Long reservationId) {
+        Member member = memberRepository.findById(loginMemberInfo.id())
+                .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
+        Reservation myReservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new NoSuchElementException("예약 정보를 찾을 수 없습니다."));
+        authorizeMyReservationRead(myReservation, member);
+        return new ReservationFullResponse(myReservation);
+    }
+
+    private void authorizeMyReservationRead(Reservation myReservation, Member member) {
+        if (!myReservation.matchesMember(member)) {
+            throw new UnauthorizedException("자신의 예약만 조회할 수 있습니다.");
+        }
     }
 
     public ReservationSimpleResponse createReservation(

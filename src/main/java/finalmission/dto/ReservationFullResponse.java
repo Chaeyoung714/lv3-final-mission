@@ -1,10 +1,7 @@
 package finalmission.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import finalmission.entity.Member;
-import finalmission.entity.Musical;
-import finalmission.entity.MusicalTime;
-import finalmission.entity.Seat;
+import finalmission.entity.Reservation;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -16,18 +13,14 @@ public record ReservationFullResponse(
         SeatFullResponse seat
 ) {
     public ReservationFullResponse(
-            LocalDate date,
-            MusicalTime musicalTime,
-            Musical musical,
-            Member member,
-            Seat seat
+            Reservation reservation
     ) {
         this(
-                date,
-                musicalTime.getTime(),
-                new MusicalFullResponse(musical),
-                new MemberFullResponse(member),
-                new SeatFullResponse(seat)
+                reservation.getDate(),
+                reservation.getMusicalTime().getTime(),
+                new MusicalFullResponse(reservation.getMusical()),
+                new MemberFullResponse(reservation.getMember()),
+                new SeatFullResponse(reservation.getSeat())
         );
     }
 }
