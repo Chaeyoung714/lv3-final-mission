@@ -39,6 +39,14 @@ public class ReservationController {
         return reservationService.findMyReservationById(loginMemberInfo, id);
     }
 
+    @GetMapping("/reservations/mine")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ReservationFullResponse> getMyAllReservations(
+            @CurrentMember LoginMemberInfo loginMemberInfo
+    ) {
+        return reservationService.findMyReservations(loginMemberInfo);
+    }
+
     @PostMapping("/reservations")
     @ResponseStatus(HttpStatus.CREATED)
     public ReservationSimpleResponse postReservation(

@@ -46,10 +46,20 @@ class ReservationControllerTest {
 
     @DisplayName("사용자는 본인이 한 예약의 상세 정보를 확인할 수 있다.")
     @Test
-    void readMyReservationTest() {
+    void readMyReservationSpecificTest() {
         RestAssured.given().log().all()
                 .cookie("token", loginToken)
                 .when().get("/reservations/1")
+                .then().log().all()
+                .statusCode(200);
+    }
+
+    @DisplayName("사용자는 본인이 한 모든 예약의 상세 정보를 확인할 수 있다.")
+    @Test
+    void readMyReservationsTest() {
+        RestAssured.given().log().all()
+                .cookie("token", loginToken)
+                .when().get("/reservations/mine")
                 .then().log().all()
                 .statusCode(200);
     }
