@@ -38,12 +38,14 @@ public class DataClient {
         );
 
         Function<UriBuilder, URI> uriBuilderURIFunction = uriBuilder ->
-                uriBuilder.path(DATA_API_URI + "/getRestDeInfo")
-                    .queryParam("serviceKey", SERVICE_KEY)
-                    .queryParam("solYear", year + "")
-                    .queryParam("solMonth", monthMessage)
-                    .queryParam("_type", "json")
-                    .build();
+//                uriBuilder.path(DATA_API_URI + "/getRestDeInfo")
+                uriBuilder.scheme("https").host("apis.data.go.kr")
+                        .path("/B090041/openapi/service/SpcdeInfoService/getRestDeInfo")
+                        .queryParam("serviceKey", SERVICE_KEY)
+                        .queryParam("solYear", year + "")
+                        .queryParam("solMonth", monthMessage)
+                        .queryParam("_type", "json")
+                        .build();
         return restClient.get()
                 .uri(uriBuilderURIFunction)
                 .accept(MediaType.APPLICATION_JSON)

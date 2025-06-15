@@ -3,10 +3,13 @@ package finalmission.client.dto;
 import java.util.List;
 
 public record HolidaysResponse(
-        List<HolidayResponse> items
+        List<HolidayItem> items,
+        int numOfRows,
+        int pageNo,
+        int totalCount
 ) {
 
-    public record HolidayResponse (
+    public record HolidayItem (
         String locdate
     ) {
     }
