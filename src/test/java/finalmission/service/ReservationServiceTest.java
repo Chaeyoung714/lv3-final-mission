@@ -133,4 +133,23 @@ class ReservationServiceTest {
                 () -> reservationService.createReservation(reservationRequest, new LoginMemberInfo(1L, "moda"))
         ).isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("예약 생성 서비스 실행 시 이미 선택된 좌석인지 검증을 한다.")
+    @Test
+    void createReservationAndValidateDuplicatedSeatTest() {
+        LocalDate date = LocalDate.of(2025, 5, 4);
+        ReservationFullRequest reservationRequest = new ReservationFullRequest(
+                date,
+                LocalTime.of(14, 30),
+                1L,
+                1L
+        );
+
+        when(reservationRepository.existsBySeatAndMusical(any(Seat.class), any(Musical.class)))
+                .thenReturn(true);
+
+        assertThatThrownBy(
+                () -> reservationService.createReservation(reservationRequest, new LoginMemberInfo(1L, "moda"))
+        ).isInstanceOf(IllegalArgumentException.class);
+    }
 }

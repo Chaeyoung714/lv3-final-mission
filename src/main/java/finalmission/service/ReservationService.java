@@ -83,6 +83,7 @@ public class ReservationService {
 
         validateDate(request.date(), requestMusical.getMusicalMonth());
         validateMaxTicketCount(member, requestMusical);
+        validateDuplicatedSeat(requestSeat, requestMusical);
 
         //TODO 검증로직 추가하기
         Reservation createdReservation = reservationRepository.save(new Reservation(
@@ -93,6 +94,13 @@ public class ReservationService {
                 requestSeat
         ));
         return new ReservationSimpleResponse(createdReservation);
+    }
+
+    private void validateDuplicatedSeat(Seat requestSeat, Musical requestMusical) {
+        boolean hasDuplicatedSeatReservation = reservationRepository.existsBySeatAndMusical(requestSeat, requestMusical);
+        if (hasDuplicatedSeatReservation) {
+            throw new IllegalArgumentException("이미 선택된 좌석입니다.");
+        }
     }
 
     private void validateMaxTicketCount(Member member, Musical musical) {
