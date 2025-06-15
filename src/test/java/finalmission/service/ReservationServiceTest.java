@@ -114,4 +114,23 @@ class ReservationServiceTest {
                 () -> reservationService.createReservation(reservationRequest, new LoginMemberInfo(1L, "moda"))
         ).isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("예약 생성 서비스 실행 시 1인당 최대 3회 예매했는지 검증을 한다.")
+    @Test
+    void createReservationAndValidateTicketLimitTest() {
+        LocalDate date = LocalDate.of(2025, 5, 4);
+        ReservationFullRequest reservationRequest = new ReservationFullRequest(
+                date,
+                LocalTime.of(14, 30),
+                1L,
+                1L
+        );
+
+        when(reservationRepository.countReservationsByMemberAndMusical(any(Member.class), any(Musical.class)))
+                .thenReturn(3L);
+
+        assertThatThrownBy(
+                () -> reservationService.createReservation(reservationRequest, new LoginMemberInfo(1L, "moda"))
+        ).isInstanceOf(IllegalArgumentException.class);
+    }
 }

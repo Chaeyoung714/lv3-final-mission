@@ -80,7 +80,9 @@ public class ReservationService {
         Seat requestSeat = seatRepository.findById(request.seatId())
                 .orElseThrow(() -> new NoSuchElementException("좌석 정보를 찾을 수 없습니다."));
         MusicalTime requestMusicalTime = MusicalTime.from(request.musicalTime());
+
         validateDate(request.date(), requestMusical.getMusicalMonth());
+        validateMaxTicketCount(member, requestMusical);
 
         //TODO 검증로직 추가하기
         Reservation createdReservation = reservationRepository.save(new Reservation(
@@ -91,6 +93,13 @@ public class ReservationService {
                 requestSeat
         ));
         return new ReservationSimpleResponse(createdReservation);
+    }
+
+    private void validateMaxTicketCount(Member member, Musical musical) {
+        long reservationsCount = reservationRepository.countReservationsByMemberAndMusical(member, musical);
+        if (reservationsCount >= 3) {
+            throw new IllegalArgumentException("1인 당 예매는 한 공연 당 최대 3회로 제한됩니다.");
+        }
     }
 
     private void validateDate(LocalDate date, int musicalMonth) {
