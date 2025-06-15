@@ -24,8 +24,8 @@ VALUES ('VIP', 1),
        ('A', 20)
 ;
 
-INSERT INTO MUSICAL (title, description)
-VALUES ('memphis', '내가 제일 좋아하는 공연!!')
+INSERT INTO MUSICAL (reservation_month, title, description)
+VALUES (6, 'memphis', '내가 제일 좋아하는 공연!!')
 ;
 
 INSERT INTO RESERVATION (date, musical_time, musical_id, member_id, seat_id)

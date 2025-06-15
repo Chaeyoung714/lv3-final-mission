@@ -1,9 +1,11 @@
 package finalmission.entity;
 
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.time.Month;
 
 @Entity
 public class Musical {
@@ -12,11 +14,14 @@ public class Musical {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private int reservationMonth;
+
     private String title;
 
     private String description;
 
-    public Musical(String title, String description) {
+    public Musical(Month reservationMonth, String title, String description) {
+        this.reservationMonth = reservationMonth.getValue();
         this.title = title;
         this.description = description;
     }
@@ -26,6 +31,10 @@ public class Musical {
 
     public Long getId() {
         return id;
+    }
+
+    public int getReservationMonth() {
+        return reservationMonth;
     }
 
     public String getTitle() {
