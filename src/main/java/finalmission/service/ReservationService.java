@@ -1,5 +1,7 @@
 package finalmission.service;
 
+import finalmission.client.DataClient;
+import finalmission.client.dto.HolidaysResponse;
 import finalmission.dto.LoginMemberInfo;
 import finalmission.dto.ReservationFullRequest;
 import finalmission.dto.ReservationFullResponse;
@@ -15,6 +17,7 @@ import finalmission.repository.MusicalRepository;
 import finalmission.repository.ReservationRepository;
 import finalmission.repository.SeatRepository;
 import jakarta.persistence.EntityManager;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +30,18 @@ public class ReservationService {
     private final MusicalRepository musicalRepository;
     private final SeatRepository seatRepository;
     private final MemberRepository memberRepository;
+    private final DataClient dataClient;
 
     @Autowired
     private EntityManager entityManager;
 
     public ReservationService(ReservationRepository reservationRepository, MusicalRepository musicalRepository,
-                              SeatRepository seatRepository, MemberRepository memberRepository) {
+                              SeatRepository seatRepository, MemberRepository memberRepository, DataClient dataClient) {
         this.reservationRepository = reservationRepository;
         this.musicalRepository = musicalRepository;
         this.seatRepository = seatRepository;
         this.memberRepository = memberRepository;
+        this.dataClient = dataClient;
     }
 
     public List<ReservationFullResponse> findAll() {
@@ -74,6 +79,7 @@ public class ReservationService {
         Seat requestSeat = seatRepository.findById(request.seatId())
                 .orElseThrow(() -> new NoSuchElementException("좌석 정보를 찾을 수 없습니다."));
         MusicalTime requestMusicalTime = MusicalTime.from(request.musicalTime());
+        validateDateHoliday(request.date());
 
         //TODO 검증로직 추가하기
         Reservation createdReservation = reservationRepository.save(new Reservation(
@@ -84,6 +90,14 @@ public class ReservationService {
                 requestSeat
         ));
         return new ReservationSimpleResponse(createdReservation);
+    }
+
+    private void validateDateHoliday(LocalDate date) {
+        HolidaysResponse holidaysResponse = dataClient.getHolidayData(date.getYear(), date.getDayOfMonth());
+        List<LocalDate> holidays = holidaysResponse.getHolidayDates();
+        if (holidays.contains(date)) {
+            throw new IllegalArgumentException("공휴일엔 예약할 수 없습니다.");
+        }
     }
 
     public ReservationSimpleResponse updateReservation(
