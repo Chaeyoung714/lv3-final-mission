@@ -1,6 +1,5 @@
 package finalmission.entity;
 
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,14 +13,14 @@ public class Musical {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int reservationMonth;
+    private int musicalMonth;
 
     private String title;
 
     private String description;
 
-    public Musical(Month reservationMonth, String title, String description) {
-        this.reservationMonth = reservationMonth.getValue();
+    public Musical(Month musicalMonth, String title, String description) {
+        this.musicalMonth = musicalMonth.getValue();
         this.title = title;
         this.description = description;
     }
@@ -33,8 +32,8 @@ public class Musical {
         return id;
     }
 
-    public int getReservationMonth() {
-        return reservationMonth;
+    public int getMusicalMonth() {
+        return musicalMonth;
     }
 
     public String getTitle() {

@@ -19,7 +19,6 @@ import finalmission.repository.SeatRepository;
 import jakarta.persistence.EntityManager;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +80,7 @@ public class ReservationService {
         Seat requestSeat = seatRepository.findById(request.seatId())
                 .orElseThrow(() -> new NoSuchElementException("좌석 정보를 찾을 수 없습니다."));
         MusicalTime requestMusicalTime = MusicalTime.from(request.musicalTime());
-        validateDate(request.date());
+        validateDate(request.date(), requestMusical.getMusicalMonth());
 
         //TODO 검증로직 추가하기
         Reservation createdReservation = reservationRepository.save(new Reservation(
@@ -94,7 +93,10 @@ public class ReservationService {
         return new ReservationSimpleResponse(createdReservation);
     }
 
-    private void validateDate(LocalDate date) {
+    private void validateDate(LocalDate date, int musicalMonth) {
+        if (date.getMonthValue() != musicalMonth) {
+            throw new IllegalArgumentException(String.format("해당 뮤지컬은 %d월 예약만 가능합니다.", musicalMonth));
+        }
         DayOfWeek dayOfWeek = date.getDayOfWeek();
         if (dayOfWeek.equals(DayOfWeek.SUNDAY)) {
             throw new IllegalArgumentException("일요일엔 예약 가능한 뮤지컬이 없습니다.");
