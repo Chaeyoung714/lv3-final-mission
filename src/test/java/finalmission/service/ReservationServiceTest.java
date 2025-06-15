@@ -58,8 +58,9 @@ class ReservationServiceTest {
     @DisplayName("예약 생성 서비스 실행 시 공휴일 검증을 한다.")
     @Test
     void createReservationAndValidateHolidayDateTest() {
+        LocalDate holiday = LocalDate.of(2025, 5, 5);
         ReservationFullRequest reservationRequest = new ReservationFullRequest(
-                LocalDate.of(2025, 5, 5),
+                holiday,
                 LocalTime.of(14, 30),
                 1L,
                 1L
@@ -77,6 +78,29 @@ class ReservationServiceTest {
                         List.of(new HolidayItem("20250505"), new HolidayItem("20250506")),
                         10, 1, 3
                 ));
+
+        assertThatThrownBy(
+                () -> reservationService.createReservation(reservationRequest, new LoginMemberInfo(1L, "moda"))
+        ).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("예약 생성 서비스 실행 시 일요일 검증을 한다.")
+    @Test
+    void createReservationAndValidateSundayDateTest() {
+        LocalDate sunday = LocalDate.of(2025, 5, 4);
+        ReservationFullRequest reservationRequest = new ReservationFullRequest(
+                sunday,
+                LocalTime.of(14, 30),
+                1L,
+                1L
+        );
+
+        when(memberRepository.findById(any(Long.class)))
+                .thenReturn(Optional.of(new Member("moda", "moda@woowa.com", "1234")));
+        when(musicalRepository.findById(any(Long.class)))
+                .thenReturn(Optional.of(new Musical("memphis", "my favorite!!")));
+        when(seatRepository.findById(any(Long.class)))
+                .thenReturn(Optional.of(new Seat(SeatGrade.VIP, 1)));
 
         assertThatThrownBy(
                 () -> reservationService.createReservation(reservationRequest, new LoginMemberInfo(1L, "moda"))

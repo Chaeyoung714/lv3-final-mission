@@ -17,7 +17,9 @@ import finalmission.repository.MusicalRepository;
 import finalmission.repository.ReservationRepository;
 import finalmission.repository.SeatRepository;
 import jakarta.persistence.EntityManager;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +81,7 @@ public class ReservationService {
         Seat requestSeat = seatRepository.findById(request.seatId())
                 .orElseThrow(() -> new NoSuchElementException("좌석 정보를 찾을 수 없습니다."));
         MusicalTime requestMusicalTime = MusicalTime.from(request.musicalTime());
-        validateDateHoliday(request.date());
+        validateDate(request.date());
 
         //TODO 검증로직 추가하기
         Reservation createdReservation = reservationRepository.save(new Reservation(
@@ -92,11 +94,15 @@ public class ReservationService {
         return new ReservationSimpleResponse(createdReservation);
     }
 
-    private void validateDateHoliday(LocalDate date) {
+    private void validateDate(LocalDate date) {
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        if (dayOfWeek.equals(DayOfWeek.SUNDAY)) {
+            throw new IllegalArgumentException("일요일엔 예약 가능한 뮤지컬이 없습니다.");
+        }
         HolidaysResponse holidaysResponse = dataClient.getHolidayData(date.getYear(), date.getDayOfMonth());
         List<LocalDate> holidays = holidaysResponse.getHolidayDates();
         if (holidays.contains(date)) {
-            throw new IllegalArgumentException("공휴일엔 예약할 수 없습니다.");
+            throw new IllegalArgumentException("공휴일엔 예약 가능한 뮤지컬이 없습니다.");
         }
     }
 
