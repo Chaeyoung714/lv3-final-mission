@@ -6,7 +6,10 @@ import static org.mockito.Mockito.when;
 
 import finalmission.client.DataClient;
 import finalmission.client.dto.HolidaysResponse;
+import finalmission.client.dto.HolidaysResponse.HolidayBody;
 import finalmission.client.dto.HolidaysResponse.HolidayItem;
+import finalmission.client.dto.HolidaysResponse.HolidayItems;
+import finalmission.client.dto.HolidaysResponse.HolidayResponse;
 import finalmission.dto.LoginMemberInfo;
 import finalmission.dto.ReservationFullRequest;
 import finalmission.entity.Member;
@@ -74,8 +77,17 @@ class ReservationServiceTest {
 
         when(dataClient.getHolidayData(any(Integer.class), any(Integer.class)))
                 .thenReturn(new HolidaysResponse(
-                        List.of(new HolidayItem("20250505"), new HolidayItem("20250506")),
-                        10, 1, 3
+                        new HolidayResponse(
+                                new HolidayBody(
+                                        new HolidayItems(
+                                                List.of(
+                                                        new HolidayItem("20250505"),
+                                                        new HolidayItem("20250506")
+                                                )
+                                        ),
+                                        10, 1, 3
+                                )
+                        )
                 ));
 
         assertThatThrownBy(
