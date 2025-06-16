@@ -10,17 +10,23 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
-@DirtiesContext(classMode = ClassMode.BEFORE_CLASS)
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
+//@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
+@Sql(scripts = "/data.sql", executionPhase = ExecutionPhase.BEFORE_TEST_METHOD)
 class ReservationControllerTest {
 
     String loginToken;
@@ -31,11 +37,24 @@ class ReservationControllerTest {
     @Autowired
     JwtTokenProvider jwtTokenProvider;
 
+    @Autowired
+    JdbcTemplate jdbcTemplate;
+
     @BeforeEach
     void setUp() {
         Member member = memberService.findMemberById(1L);
         loginToken = jwtTokenProvider.createToken(member);
     }
+
+//    @AfterEach
+//    void cleanUp() {
+//        jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY FALSE");
+//        jdbcTemplate.update("TRUNCATE TABLE MEMBER");
+//        jdbcTemplate.update("TRUNCATE TABLE SEAT");
+//        jdbcTemplate.update("TRUNCATE TABLE MUSICAL");
+//        jdbcTemplate.update("TRUNCATE TABLE RESERVATION");
+//        jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY TRUE");
+//    }
 
     @DisplayName("모든 사용자는 예약 현황을 확인할 수 있다.")
     @Test

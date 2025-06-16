@@ -118,7 +118,7 @@ public class ReservationService {
         if (dayOfWeek.equals(DayOfWeek.SUNDAY)) {
             throw new IllegalArgumentException("일요일엔 예약 가능한 뮤지컬이 없습니다.");
         }
-        HolidaysResponse holidaysResponse = dataClient.getHolidayData(date.getYear(), date.getDayOfMonth());
+        HolidaysResponse holidaysResponse = dataClient.getHolidayData(date.getYear(), date.getMonthValue());
         List<LocalDate> holidays = holidaysResponse.getHolidayDates();
         if (holidays.contains(date)) {
             throw new IllegalArgumentException("공휴일엔 예약 가능한 뮤지컬이 없습니다.");
