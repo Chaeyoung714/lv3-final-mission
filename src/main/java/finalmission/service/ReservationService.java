@@ -96,35 +96,6 @@ public class ReservationService {
         return new ReservationSimpleResponse(createdReservation);
     }
 
-    private void validateDuplicatedSeat(Seat requestSeat, Musical requestMusical) {
-        boolean hasDuplicatedSeatReservation = reservationRepository.existsBySeatAndMusical(requestSeat, requestMusical);
-        if (hasDuplicatedSeatReservation) {
-            throw new IllegalArgumentException("이미 선택된 좌석입니다.");
-        }
-    }
-
-    private void validateMaxTicketCount(Member member, Musical musical) {
-        long reservationsCount = reservationRepository.countReservationsByMemberAndMusical(member, musical);
-        if (reservationsCount >= 3) {
-            throw new IllegalArgumentException("1인 당 예매는 한 공연 당 최대 3회로 제한됩니다.");
-        }
-    }
-
-    private void validateDate(LocalDate date, int musicalMonth) {
-        if (date.getMonthValue() != musicalMonth) {
-            throw new IllegalArgumentException(String.format("해당 뮤지컬은 %d월 예약만 가능합니다.", musicalMonth));
-        }
-        DayOfWeek dayOfWeek = date.getDayOfWeek();
-        if (dayOfWeek.equals(DayOfWeek.SUNDAY)) {
-            throw new IllegalArgumentException("일요일엔 예약 가능한 뮤지컬이 없습니다.");
-        }
-        HolidaysResponse holidaysResponse = dataClient.getHolidayData(date.getYear(), date.getMonthValue());
-        List<LocalDate> holidays = holidaysResponse.getHolidayDates();
-        if (holidays.contains(date)) {
-            throw new IllegalArgumentException("공휴일엔 예약 가능한 뮤지컬이 없습니다.");
-        }
-    }
-
     public ReservationSimpleResponse updateReservation(
             ReservationFullRequest request,
             LoginMemberInfo loginMemberInfo,
@@ -139,6 +110,7 @@ public class ReservationService {
         if (request.seatId() != null) {
             Seat requestSeat = seatRepository.findById(request.seatId())
                     .orElseThrow(() -> new NoSuchElementException("좌석 정보를 찾을 수 없습니다."));
+            validateDuplicatedSeat(requestSeat, myReservation.getMusical());
             myReservation.changeSeatTo(requestSeat);
         }
         if (request.date() != null
@@ -166,6 +138,35 @@ public class ReservationService {
     private void authorizeMyReservation(Reservation myReservation, Member member) {
         if (!myReservation.matchesMember(member)) {
             throw new UnauthorizedException("자신의 예약만 조회 및 변경할 수 있습니다.");
+        }
+    }
+
+    private void validateDuplicatedSeat(Seat requestSeat, Musical requestMusical) {
+        boolean hasDuplicatedSeatReservation = reservationRepository.existsBySeatAndMusical(requestSeat, requestMusical);
+        if (hasDuplicatedSeatReservation) {
+            throw new IllegalArgumentException("이미 선택된 좌석입니다.");
+        }
+    }
+
+    private void validateMaxTicketCount(Member member, Musical musical) {
+        long reservationsCount = reservationRepository.countReservationsByMemberAndMusical(member, musical);
+        if (reservationsCount >= 3) {
+            throw new IllegalArgumentException("1인 당 예매는 한 공연 당 최대 3회로 제한됩니다.");
+        }
+    }
+
+    private void validateDate(LocalDate date, int musicalMonth) {
+        if (date.getMonthValue() != musicalMonth) {
+            throw new IllegalArgumentException(String.format("해당 뮤지컬은 %d월 예약만 가능합니다.", musicalMonth));
+        }
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        if (dayOfWeek.equals(DayOfWeek.SUNDAY)) {
+            throw new IllegalArgumentException("일요일엔 예약 가능한 뮤지컬이 없습니다.");
+        }
+        HolidaysResponse holidaysResponse = dataClient.getHolidayData(date.getYear(), date.getMonthValue());
+        List<LocalDate> holidays = holidaysResponse.getHolidayDates();
+        if (holidays.contains(date)) {
+            throw new IllegalArgumentException("공휴일엔 예약 가능한 뮤지컬이 없습니다.");
         }
     }
 }
