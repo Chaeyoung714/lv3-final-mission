@@ -1,11 +1,9 @@
 package finalmission.auth;
 
-import finalmission.entity.Member;
+import finalmission.domain.Member;
 import finalmission.exception.UnauthorizedException;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

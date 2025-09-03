@@ -3,7 +3,7 @@ package finalmission.controller.web;
 import finalmission.auth.JwtTokenProvider;
 import finalmission.dto.LoginMemberInfo;
 import finalmission.dto.annotation.CurrentMember;
-import finalmission.entity.Member;
+import finalmission.domain.Member;
 import finalmission.exception.UnauthorizedException;
 import finalmission.service.MemberService;
 import jakarta.servlet.http.Cookie;

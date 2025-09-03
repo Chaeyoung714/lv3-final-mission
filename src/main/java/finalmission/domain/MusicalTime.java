@@ -1,4 +1,4 @@
-package finalmission.entity;
+package finalmission.domain;
 
 import java.time.LocalTime;
 import java.util.Arrays;

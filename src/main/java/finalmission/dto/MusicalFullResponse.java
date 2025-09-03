@@ -1,6 +1,6 @@
 package finalmission.dto;
 
-import finalmission.entity.Musical;
+import finalmission.domain.Musical;
 
 public record MusicalFullResponse(
         Long id,

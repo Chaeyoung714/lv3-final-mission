@@ -1,7 +1,7 @@
 package finalmission.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import finalmission.entity.Reservation;
+import finalmission.domain.Reservation;
 import java.time.LocalDate;
 import java.time.LocalTime;
 

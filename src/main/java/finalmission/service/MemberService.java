@@ -2,7 +2,7 @@ package finalmission.service;
 
 import finalmission.auth.JwtTokenProvider;
 import finalmission.dto.LoginRequest;
-import finalmission.entity.Member;
+import finalmission.domain.Member;
 import finalmission.repository.MemberRepository;
 import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;

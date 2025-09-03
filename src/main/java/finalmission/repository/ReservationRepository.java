@@ -1,9 +1,9 @@
 package finalmission.repository;
 
-import finalmission.entity.Member;
-import finalmission.entity.Musical;
-import finalmission.entity.Reservation;
-import finalmission.entity.Seat;
+import finalmission.domain.Member;
+import finalmission.domain.Musical;
+import finalmission.domain.Reservation;
+import finalmission.domain.Seat;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 

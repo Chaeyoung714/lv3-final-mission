@@ -1,4 +1,4 @@
-package finalmission.entity;
+package finalmission.domain;
 
 public enum SeatGrade {
     VIP,

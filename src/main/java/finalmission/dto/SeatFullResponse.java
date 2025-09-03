@@ -1,6 +1,6 @@
 package finalmission.dto;
 
-import finalmission.entity.Seat;
+import finalmission.domain.Seat;
 
 public record SeatFullResponse(
         Long id,

@@ -1,6 +1,6 @@
 package finalmission.dto;
 
-import finalmission.entity.Member;
+import finalmission.domain.Member;
 
 public record LoginMemberInfo(
         Long id,

@@ -4,7 +4,7 @@ import static org.hamcrest.Matchers.is;
 
 import finalmission.auth.JwtTokenProvider;
 import finalmission.dto.ReservationFullRequest;
-import finalmission.entity.Member;
+import finalmission.domain.Member;
 import finalmission.service.MemberService;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;

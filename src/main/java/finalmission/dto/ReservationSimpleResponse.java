@@ -1,8 +1,8 @@
 package finalmission.dto;
 
-import finalmission.entity.MusicalTime;
-import finalmission.entity.Reservation;
-import finalmission.entity.SeatGrade;
+import finalmission.domain.MusicalTime;
+import finalmission.domain.Reservation;
+import finalmission.domain.SeatGrade;
 import java.time.LocalDate;
 
 public record ReservationSimpleResponse(
