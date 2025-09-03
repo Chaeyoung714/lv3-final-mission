@@ -25,7 +25,7 @@ import org.springframework.web.client.RestClient;
 //@Import(value = {DataClient.class, ObjectMapper.class})
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
-@Sql(scripts = "/data.sql", executionPhase = ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = "/db/dev/data.sql", executionPhase = ExecutionPhase.BEFORE_TEST_METHOD)
 class DataClientTest {
 
     @Autowired

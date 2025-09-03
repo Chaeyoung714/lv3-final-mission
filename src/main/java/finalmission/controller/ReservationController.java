@@ -7,6 +7,8 @@ import finalmission.dto.ReservationSimpleResponse;
 import finalmission.dto.annotation.CurrentMember;
 import finalmission.service.ReservationService;
 import java.util.List;
+
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +38,7 @@ public class ReservationController {
     @ResponseStatus(HttpStatus.OK)
     public ReservationFullResponse getMyReservation(
             @PathVariable Long id,
-            @CurrentMember LoginMemberInfo loginMemberInfo
+            @Parameter(hidden = true) @CurrentMember LoginMemberInfo loginMemberInfo
     ) {
         return reservationService.findMyReservationById(loginMemberInfo, id);
     }
@@ -44,7 +46,7 @@ public class ReservationController {
     @GetMapping("/reservations/mine")
     @ResponseStatus(HttpStatus.OK)
     public List<ReservationFullResponse> getMyAllReservations(
-            @CurrentMember LoginMemberInfo loginMemberInfo
+            @Parameter(hidden = true) @CurrentMember LoginMemberInfo loginMemberInfo
     ) {
         return reservationService.findMyReservations(loginMemberInfo);
     }
@@ -53,7 +55,7 @@ public class ReservationController {
     @ResponseStatus(HttpStatus.CREATED)
     public ReservationSimpleResponse postReservation(
             @RequestBody ReservationFullRequest request,
-            @CurrentMember LoginMemberInfo loginMemberInfo
+            @Parameter(hidden = true) @CurrentMember LoginMemberInfo loginMemberInfo
     ) {
         return reservationService.createReservation(
                 request, loginMemberInfo
@@ -64,7 +66,7 @@ public class ReservationController {
     @ResponseStatus(HttpStatus.OK)
     public ReservationSimpleResponse patchMyReservation(
             @RequestBody ReservationFullRequest request,
-            @CurrentMember LoginMemberInfo loginMemberInfo,
+            @Parameter(hidden = true) @CurrentMember LoginMemberInfo loginMemberInfo,
             @PathVariable Long id
     ) {
         return reservationService.updateReservation(
@@ -75,7 +77,7 @@ public class ReservationController {
     @DeleteMapping("/reservations/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteMyReservation(
-            @CurrentMember LoginMemberInfo loginMemberInfo,
+            @Parameter(hidden = true) @CurrentMember LoginMemberInfo loginMemberInfo,
             @PathVariable Long id
     ) {
          reservationService.deleteMyReservation(

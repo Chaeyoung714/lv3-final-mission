@@ -16,7 +16,7 @@ public class DataClient {
     private final RestClient restClient;
     private final ObjectMapper objectMapper;
 
-    @Value("${data.secret}}")
+    @Value("${dataClient.secret}}")
     private String SERVICE_KEY;
 
     public DataClient(ObjectMapper objectMapper, RestClient restClient) {
