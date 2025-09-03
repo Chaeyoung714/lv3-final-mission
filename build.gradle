@@ -4,6 +4,9 @@ plugins {
     id 'java'
 }
 
+bootJar { enabled = true }
+jar { enabled = false }
+
 group = 'nextstep'
 version = '0.0.1-SNAPSHOT'
 
@@ -29,6 +32,9 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-gson:0.12.6'
 
     runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-mysql'
 
     implementation "me.paulschwarz:spring-dotenv:4.0.0"
 
