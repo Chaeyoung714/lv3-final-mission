@@ -8,7 +8,7 @@ spring:
   sql:
     init:
       mode: always
-#      schema-locations: classpath:db/dev/schema.sql
+      schema-locations: classpath:db/dev/schema.sql
       data-locations: classpath:db/dev/data.sql
   jpa:
     show-sql: true
@@ -16,8 +16,8 @@ spring:
       hibernate:
         format_sql: true
     hibernate:
-      ddl-auto: create-drop
-    defer-datasource-initialization: true
+      ddl-auto: validate
+    defer-datasource-initialization: false
   flyway:
     enabled: false
 
