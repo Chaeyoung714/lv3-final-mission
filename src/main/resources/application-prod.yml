@@ -18,16 +18,16 @@ spring:
       ddl-auto: validate
     defer-datasource-initialization: false
 
-  flyway:
-    enabled: true
-    user: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
-    locations: classpath:db/migration
-    baseline-on-migrate: true
-    validate-on-migrate: true
-    clean-disabled: true
-    out-of-order: false
-    encoding: UTF-8
+    flyway:
+      enabled: true
+      user: ${DATABASE_USERNAME}
+      password: ${DATABASE_PASSWORD}
+      locations: classpath:db/migration
+      baseline-on-migrate: true
+      validate-on-migrate: true
+      clean-disabled: true
+      out-of-order: false
+      encoding: UTF-8
 
   config:
     activate:
