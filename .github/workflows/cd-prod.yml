@@ -1,0 +1,15 @@
+name: Prod server CD
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+
+jobs:
+  cd:
+    runs-on: [self-hosted, prod]
+    steps:
+      - name: Grant execute permission to deploy.sh
+        run: chmod +x home/ubuntu/deploy.sh
+
+      - name: Start Deploy Script
+        run: /home/ubuntu/deploy.sh
